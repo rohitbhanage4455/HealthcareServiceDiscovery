@@ -1,0 +1,56 @@
+package com.example.HealthcareServiceDiscovery.Controller;
+
+import com.example.HealthcareServiceDiscovery.DTO.HealthcareProviderDTO;
+import com.example.HealthcareServiceDiscovery.Service.HealthcareProviderService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/providers")
+public class HealthcareProviderController {
+
+    private final HealthcareProviderService healthcareProviderService;
+
+    public HealthcareProviderController(
+            HealthcareProviderService healthcareProviderService) {
+
+        this.healthcareProviderService = healthcareProviderService;
+    }
+
+    @PostMapping
+    public HealthcareProviderDTO addProvider(
+            @RequestBody HealthcareProviderDTO providerDTO) {
+
+        return healthcareProviderService.addProvider(providerDTO);
+    }
+
+    @GetMapping
+    public List<HealthcareProviderDTO> getAllProviders() {
+
+        return healthcareProviderService.getAllProviders();
+    }
+
+    @GetMapping("/{id}")
+    public HealthcareProviderDTO getProviderById(
+            @PathVariable Long id) {
+
+        return healthcareProviderService.getProviderById(id);
+    }
+
+    @PutMapping("/{id}")
+    public HealthcareProviderDTO updateProvider(
+            @PathVariable Long id,
+            @RequestBody HealthcareProviderDTO providerDTO) {
+
+        return healthcareProviderService.updateProvider(id, providerDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteProvider(@PathVariable Long id) {
+
+        healthcareProviderService.deleteProvider(id);
+
+        return "Provider deleted successfully";
+    }
+}
