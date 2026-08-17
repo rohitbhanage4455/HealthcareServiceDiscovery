@@ -31,6 +31,13 @@ public class HealthcareServiceController {
         return healthcareServiceService.getAllServices();
     }
 
+    @GetMapping("/search")
+    public List<HealthcareServiceDTO> searchServices(
+            @RequestParam String name) {
+
+        return healthcareServiceService.searchServices(name);
+    }
+
     @GetMapping("/{id}")
     public HealthcareServiceDTO getServiceById(
             @PathVariable Long id) {

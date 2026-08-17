@@ -32,6 +32,20 @@ public class HealthcareProviderController {
         return healthcareProviderService.getAllProviders();
     }
 
+    @GetMapping("/search")
+    public List<HealthcareProviderDTO> getProvidersByCity(
+            @RequestParam String city) {
+
+        return healthcareProviderService.getProvidersByCity(city);
+    }
+
+    @GetMapping("/search/type")
+    public List<HealthcareProviderDTO> getProvidersByType(
+            @RequestParam String type) {
+
+        return healthcareProviderService.getProvidersByType(type);
+    }
+
     @GetMapping("/{id}")
     public HealthcareProviderDTO getProviderById(
             @PathVariable Long id) {

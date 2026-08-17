@@ -47,6 +47,13 @@ public class ProviderServiceController {
                 id, providerServiceDTO);
     }
 
+    @GetMapping("/search")
+    public List<ProviderServiceDTO> getProvidersByService(
+            @RequestParam Long serviceId) {
+
+        return providerServiceService.getProvidersByService(serviceId);
+    }
+
     @DeleteMapping("/{id}")
     public String deleteProviderService(@PathVariable Long id) {
 

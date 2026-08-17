@@ -96,4 +96,13 @@ public class HealthcareServiceService {
 
         return dto;
     }
+
+    public List<HealthcareServiceDTO> searchServices(String name) {
+
+        return healthcareServiceRepository
+                .findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
 }

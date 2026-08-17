@@ -148,4 +148,14 @@ public class ProviderServiceService {
 
         return dto;
     }
+
+    public List<ProviderServiceDTO> getProvidersByService(
+            Long serviceId) {
+
+        return providerServiceRepository
+                .findByServiceId(serviceId)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
 }

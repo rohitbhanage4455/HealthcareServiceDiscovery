@@ -110,4 +110,21 @@ public class HealthcareProviderService {
 
         return dto;
     }
+    public List<HealthcareProviderDTO> getProvidersByCity(String city) {
+
+        return healthcareProviderRepository
+                .findByCityIgnoreCase(city)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    public List<HealthcareProviderDTO> getProvidersByType(String type) {
+
+        return healthcareProviderRepository
+                .findByTypeIgnoreCase(type)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
 }
