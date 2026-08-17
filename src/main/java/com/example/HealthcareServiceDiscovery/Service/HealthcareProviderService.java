@@ -2,6 +2,7 @@ package com.example.HealthcareServiceDiscovery.Service;
 
 import com.example.HealthcareServiceDiscovery.DTO.HealthcareProviderDTO;
 import com.example.HealthcareServiceDiscovery.Entity.HealthcareProvider;
+import com.example.HealthcareServiceDiscovery.Exception.ResourceNotFoundException;
 import com.example.HealthcareServiceDiscovery.Repository.HealthcareProviderRepository;
 import org.springframework.stereotype.Service;
 
@@ -49,11 +50,10 @@ public class HealthcareProviderService {
 
         HealthcareProvider provider =
                 healthcareProviderRepository.findById(id)
-                        .orElse(null);
-
-        if (provider == null) {
-            return null;
-        }
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Provider not found with id: " + id
+                                ));
 
         return convertToDTO(provider);
     }
@@ -64,11 +64,10 @@ public class HealthcareProviderService {
 
         HealthcareProvider existingProvider =
                 healthcareProviderRepository.findById(id)
-                        .orElse(null);
-
-        if (existingProvider == null) {
-            return null;
-        }
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Provider not found with id: " + id
+                                ));
 
         existingProvider.setName(updatedProviderDTO.getName());
         existingProvider.setType(updatedProviderDTO.getType());
@@ -86,7 +85,14 @@ public class HealthcareProviderService {
 
     public void deleteProvider(Long id) {
 
-        healthcareProviderRepository.deleteById(id);
+        HealthcareProvider existingProvider =
+                healthcareProviderRepository.findById(id)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Provider not found with id: " + id
+                                ));
+
+        healthcareProviderRepository.delete(existingProvider);
     }
 
     private HealthcareProviderDTO convertToDTO(

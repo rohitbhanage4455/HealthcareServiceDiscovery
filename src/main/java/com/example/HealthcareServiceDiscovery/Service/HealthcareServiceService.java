@@ -2,6 +2,7 @@ package com.example.HealthcareServiceDiscovery.Service;
 
 import com.example.HealthcareServiceDiscovery.DTO.HealthcareServiceDTO;
 import com.example.HealthcareServiceDiscovery.Entity.HealthcareService;
+import com.example.HealthcareServiceDiscovery.Exception.ResourceNotFoundException;
 import com.example.HealthcareServiceDiscovery.Repository.HealthcareServiceRepository;
 import org.springframework.stereotype.Service;
 
@@ -44,11 +45,10 @@ public class HealthcareServiceService {
 
         HealthcareService service =
                 healthcareServiceRepository.findById(id)
-                        .orElse(null);
-
-        if (service == null) {
-            return null;
-        }
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Healthcare service not found with id: " + id
+                                ));
 
         return convertToDTO(service);
     }
@@ -59,11 +59,10 @@ public class HealthcareServiceService {
 
         HealthcareService existingService =
                 healthcareServiceRepository.findById(id)
-                        .orElse(null);
-
-        if (existingService == null) {
-            return null;
-        }
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Healthcare service not found with id: " + id
+                                ));
 
         existingService.setName(updatedServiceDTO.getName());
         existingService.setDescription(
@@ -77,7 +76,14 @@ public class HealthcareServiceService {
 
     public void deleteService(Long id) {
 
-        healthcareServiceRepository.deleteById(id);
+        HealthcareService existingService =
+                healthcareServiceRepository.findById(id)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Healthcare service not found with id: " + id
+                                ));
+
+        healthcareServiceRepository.delete(existingService);
     }
 
     private HealthcareServiceDTO convertToDTO(

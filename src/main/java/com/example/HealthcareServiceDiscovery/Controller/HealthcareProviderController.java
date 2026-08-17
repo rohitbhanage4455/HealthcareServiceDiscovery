@@ -2,6 +2,7 @@ package com.example.HealthcareServiceDiscovery.Controller;
 
 import com.example.HealthcareServiceDiscovery.DTO.HealthcareProviderDTO;
 import com.example.HealthcareServiceDiscovery.Service.HealthcareProviderService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class HealthcareProviderController {
 
     @PostMapping
     public HealthcareProviderDTO addProvider(
-            @RequestBody HealthcareProviderDTO providerDTO) {
+            @Valid @RequestBody HealthcareProviderDTO providerDTO) {
 
         return healthcareProviderService.addProvider(providerDTO);
     }
@@ -41,7 +42,7 @@ public class HealthcareProviderController {
     @PutMapping("/{id}")
     public HealthcareProviderDTO updateProvider(
             @PathVariable Long id,
-            @RequestBody HealthcareProviderDTO providerDTO) {
+            @Valid @RequestBody HealthcareProviderDTO providerDTO) {
 
         return healthcareProviderService.updateProvider(id, providerDTO);
     }

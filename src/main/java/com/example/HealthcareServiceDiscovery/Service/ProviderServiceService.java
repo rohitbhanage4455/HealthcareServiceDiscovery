@@ -4,6 +4,7 @@ import com.example.HealthcareServiceDiscovery.DTO.ProviderServiceDTO;
 import com.example.HealthcareServiceDiscovery.Entity.HealthcareProvider;
 import com.example.HealthcareServiceDiscovery.Entity.HealthcareService;
 import com.example.HealthcareServiceDiscovery.Entity.ProviderService;
+import com.example.HealthcareServiceDiscovery.Exception.ResourceNotFoundException;
 import com.example.HealthcareServiceDiscovery.Repository.HealthcareProviderRepository;
 import com.example.HealthcareServiceDiscovery.Repository.HealthcareServiceRepository;
 import com.example.HealthcareServiceDiscovery.Repository.ProviderServiceRepository;
@@ -34,16 +35,20 @@ public class ProviderServiceService {
         HealthcareProvider provider =
                 healthcareProviderRepository.findById(
                                 providerServiceDTO.getProviderId())
-                        .orElse(null);
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Provider not found with id: "
+                                                + providerServiceDTO.getProviderId()
+                                ));
 
         HealthcareService service =
                 healthcareServiceRepository.findById(
                                 providerServiceDTO.getServiceId())
-                        .orElse(null);
-
-        if (provider == null || service == null) {
-            return null;
-        }
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Healthcare service not found with id: "
+                                                + providerServiceDTO.getServiceId()
+                                ));
 
         ProviderService providerService = new ProviderService();
 
@@ -69,11 +74,10 @@ public class ProviderServiceService {
 
         ProviderService providerService =
                 providerServiceRepository.findById(id)
-                        .orElse(null);
-
-        if (providerService == null) {
-            return null;
-        }
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Provider service not found with id: " + id
+                                ));
 
         return convertToDTO(providerService);
     }
@@ -84,25 +88,28 @@ public class ProviderServiceService {
 
         ProviderService existingProviderService =
                 providerServiceRepository.findById(id)
-                        .orElse(null);
-
-        if (existingProviderService == null) {
-            return null;
-        }
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Provider service not found with id: " + id
+                                ));
 
         HealthcareProvider provider =
                 healthcareProviderRepository.findById(
                                 updatedDTO.getProviderId())
-                        .orElse(null);
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Provider not found with id: "
+                                                + updatedDTO.getProviderId()
+                                ));
 
         HealthcareService service =
                 healthcareServiceRepository.findById(
                                 updatedDTO.getServiceId())
-                        .orElse(null);
-
-        if (provider == null || service == null) {
-            return null;
-        }
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Healthcare service not found with id: "
+                                                + updatedDTO.getServiceId()
+                                ));
 
         existingProviderService.setProvider(provider);
         existingProviderService.setService(service);
@@ -116,7 +123,14 @@ public class ProviderServiceService {
 
     public void deleteProviderService(Long id) {
 
-        providerServiceRepository.deleteById(id);
+        ProviderService existingProviderService =
+                providerServiceRepository.findById(id)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Provider service not found with id: " + id
+                                ));
+
+        providerServiceRepository.delete(existingProviderService);
     }
 
     private ProviderServiceDTO convertToDTO(
