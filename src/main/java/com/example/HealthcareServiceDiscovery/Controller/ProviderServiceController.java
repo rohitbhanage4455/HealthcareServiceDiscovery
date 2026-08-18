@@ -62,4 +62,11 @@ public class ProviderServiceController {
 
         return "Provider service deleted successfully";
     }
+
+    @GetMapping("/compare")
+    public ProviderServiceResponseDTO getCheapestProvider(
+            @RequestParam Long serviceId) {
+
+        return providerServiceService.getCheapestProvider(serviceId);
+    }
 }

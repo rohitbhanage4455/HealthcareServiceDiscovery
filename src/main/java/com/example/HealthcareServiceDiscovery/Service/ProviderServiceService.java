@@ -1,15 +1,17 @@
 package com.example.HealthcareServiceDiscovery.Service;
 
 import com.example.HealthcareServiceDiscovery.DTO.ProviderServiceDTO;
+import com.example.HealthcareServiceDiscovery.DTO.ProviderServiceResponseDTO;
 import com.example.HealthcareServiceDiscovery.Entity.HealthcareProvider;
 import com.example.HealthcareServiceDiscovery.Entity.HealthcareService;
 import com.example.HealthcareServiceDiscovery.Entity.ProviderService;
+import com.example.HealthcareServiceDiscovery.Exception.DuplicateProviderServiceException;
 import com.example.HealthcareServiceDiscovery.Exception.ResourceNotFoundException;
 import com.example.HealthcareServiceDiscovery.Repository.HealthcareProviderRepository;
 import com.example.HealthcareServiceDiscovery.Repository.HealthcareServiceRepository;
 import com.example.HealthcareServiceDiscovery.Repository.ProviderServiceRepository;
 import org.springframework.stereotype.Service;
-import com.example.HealthcareServiceDiscovery.DTO.ProviderServiceResponseDTO;
+
 import java.util.List;
 
 @Service
@@ -49,6 +51,19 @@ public class ProviderServiceService {
                                         "Healthcare service not found with id: "
                                                 + providerServiceDTO.getServiceId()
                                 ));
+
+        boolean alreadyExists =
+                providerServiceRepository
+                        .findByProviderIdAndServiceId(
+                                providerServiceDTO.getProviderId(),
+                                providerServiceDTO.getServiceId())
+                        .isPresent();
+
+        if (alreadyExists) {
+            throw new DuplicateProviderServiceException(
+                    "This provider already offers this service"
+            );
+        }
 
         ProviderService providerService = new ProviderService();
 
@@ -133,23 +148,6 @@ public class ProviderServiceService {
         providerServiceRepository.delete(existingProviderService);
     }
 
-    private ProviderServiceDTO convertToDTO(
-            ProviderService providerService) {
-
-        ProviderServiceDTO dto = new ProviderServiceDTO();
-
-        dto.setProviderId(
-                providerService.getProvider().getId());
-
-        dto.setServiceId(
-                providerService.getService().getId());
-
-        dto.setPrice(providerService.getPrice());
-
-        return dto;
-    }
-
-
     public List<ProviderServiceResponseDTO> getProvidersByService(
             Long serviceId) {
 
@@ -174,4 +172,47 @@ public class ProviderServiceService {
                 .toList();
     }
 
+    public ProviderServiceResponseDTO getCheapestProvider(
+            Long serviceId) {
+
+        ProviderService cheapestProvider =
+                providerServiceRepository
+                        .findByServiceIdOrderByPriceAsc(serviceId)
+                        .stream()
+                        .findFirst()
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "No provider found for service id: "
+                                                + serviceId
+                                ));
+
+        ProviderServiceResponseDTO dto =
+                new ProviderServiceResponseDTO();
+
+        dto.setProviderName(
+                cheapestProvider.getProvider().getName());
+
+        dto.setServiceName(
+                cheapestProvider.getService().getName());
+
+        dto.setPrice(cheapestProvider.getPrice());
+
+        return dto;
+    }
+
+    private ProviderServiceDTO convertToDTO(
+            ProviderService providerService) {
+
+        ProviderServiceDTO dto = new ProviderServiceDTO();
+
+        dto.setProviderId(
+                providerService.getProvider().getId());
+
+        dto.setServiceId(
+                providerService.getService().getId());
+
+        dto.setPrice(providerService.getPrice());
+
+        return dto;
+    }
 }
