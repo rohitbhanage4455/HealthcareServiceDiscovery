@@ -1,6 +1,7 @@
 package com.example.HealthcareServiceDiscovery.Controller;
 
 import com.example.HealthcareServiceDiscovery.DTO.ProviderServiceDTO;
+import com.example.HealthcareServiceDiscovery.DTO.ProviderServiceResponseDTO;
 import com.example.HealthcareServiceDiscovery.Service.ProviderServiceService;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,7 +49,7 @@ public class ProviderServiceController {
     }
 
     @GetMapping("/search")
-    public List<ProviderServiceDTO> getProvidersByService(
+    public List<ProviderServiceResponseDTO> getProvidersByService(
             @RequestParam Long serviceId) {
 
         return providerServiceService.getProvidersByService(serviceId);

@@ -9,7 +9,7 @@ import com.example.HealthcareServiceDiscovery.Repository.HealthcareProviderRepos
 import com.example.HealthcareServiceDiscovery.Repository.HealthcareServiceRepository;
 import com.example.HealthcareServiceDiscovery.Repository.ProviderServiceRepository;
 import org.springframework.stereotype.Service;
-
+import com.example.HealthcareServiceDiscovery.DTO.ProviderServiceResponseDTO;
 import java.util.List;
 
 @Service
@@ -149,13 +149,29 @@ public class ProviderServiceService {
         return dto;
     }
 
-    public List<ProviderServiceDTO> getProvidersByService(
+
+    public List<ProviderServiceResponseDTO> getProvidersByService(
             Long serviceId) {
 
         return providerServiceRepository
-                .findByServiceId(serviceId)
+                .findByServiceIdOrderByPriceAsc(serviceId)
                 .stream()
-                .map(this::convertToDTO)
+                .map(providerService -> {
+
+                    ProviderServiceResponseDTO dto =
+                            new ProviderServiceResponseDTO();
+
+                    dto.setProviderName(
+                            providerService.getProvider().getName());
+
+                    dto.setServiceName(
+                            providerService.getService().getName());
+
+                    dto.setPrice(providerService.getPrice());
+
+                    return dto;
+                })
                 .toList();
     }
+
 }

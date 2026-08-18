@@ -10,4 +10,5 @@ public interface ProviderServiceRepository
 
 
     List<ProviderService> findByServiceId(Long serviceId);
+    List<ProviderService> findByServiceIdOrderByPriceAsc(Long serviceId);
 }
