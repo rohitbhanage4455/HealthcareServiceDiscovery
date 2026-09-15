@@ -1,5 +1,6 @@
 package com.example.HealthcareServiceDiscovery.Service;
 
+import com.example.HealthcareServiceDiscovery.DTO.UserResponseDTO;
 import com.example.HealthcareServiceDiscovery.Entity.User;
 import com.example.HealthcareServiceDiscovery.Repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,18 +20,26 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User registerUser(
+    public UserResponseDTO registerUser(
             String username,
-            String password,
-            String role) {
+            String password) {
 
         User user = new User();
 
         user.setUsername(username);
-        user.setPassword(
-                passwordEncoder.encode(password));
-        user.setRole(role);
 
-        return userRepository.save(user);
+        user.setPassword(
+                passwordEncoder.encode(password)
+        );
+
+        user.setRole("USER");
+
+        User savedUser = userRepository.save(user);
+
+        return new UserResponseDTO(
+                savedUser.getId(),
+                savedUser.getUsername(),
+                savedUser.getRole()
+        );
     }
 }

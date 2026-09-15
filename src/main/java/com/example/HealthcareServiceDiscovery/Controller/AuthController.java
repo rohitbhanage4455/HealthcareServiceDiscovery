@@ -1,6 +1,6 @@
 package com.example.HealthcareServiceDiscovery.Controller;
 
-import com.example.HealthcareServiceDiscovery.Entity.User;
+import com.example.HealthcareServiceDiscovery.DTO.UserResponseDTO;
 import com.example.HealthcareServiceDiscovery.Service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,15 +16,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public User registerUser(
+    public UserResponseDTO registerUser(
             @RequestParam String username,
-            @RequestParam String password,
-            @RequestParam String role) {
+            @RequestParam String password) {
 
         return userService.registerUser(
                 username,
-                password,
-                role
+                password
         );
     }
 }
